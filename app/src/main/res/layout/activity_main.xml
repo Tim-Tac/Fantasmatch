@@ -33,6 +33,7 @@
         android:src="@drawable/beat"
         android:layout_marginTop="360dp" />
 
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="40dp"
@@ -41,6 +42,5 @@
         android:textColor="#EEEEEE"
         android:gravity="center"
         android:layout_alignParentBottom="true" />
-
 
 </RelativeLayout>
