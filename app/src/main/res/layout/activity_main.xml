@@ -33,6 +33,12 @@
         android:src="@drawable/beat"
         android:layout_marginTop="360dp" />
 
+    <com.facebook.widget.LoginButton
+        android:id="@+id/authButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="450dp" />
+
 
     <TextView
         android:layout_width="match_parent"
