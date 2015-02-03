@@ -1,23 +1,31 @@
 package com.innervision.timtac.fantasmatch;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-
 import com.facebook.AppEventsLogger;
 import com.facebook.Session;
 import com.facebook.SessionState;
+import com.facebook.android.AsyncFacebookRunner;
+import com.facebook.android.Facebook;
 import com.facebook.widget.LoginButton;
-
 import org.json.JSONObject;
-
 import java.util.Arrays;
 
 
 public class MainActivity extends Activity {
+
+    private String APP_ID = "1576795835866565";
+    private Facebook facebook;
+    private AsyncFacebookRunner mAsyncRunner;
+    String FILENAME = "AndroidSSO_data";
+    private SharedPreferences mPrefs;
+
     private Session.StatusCallback statusCallback = new Session.StatusCallback() {
+
         @Override
         public void call(Session session, SessionState sessionState, Exception e) {
 
@@ -36,8 +44,15 @@ public class MainActivity extends Activity {
 
         if(Session.getActiveSession() == null)
         {
-            Toast.makeText(getApplicationContext(),"il y a un session", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),"il y a pas de session", Toast.LENGTH_LONG).show();
         }
+        else
+        {
+            Toast.makeText(getApplicationContext(),"il y a une session", Toast.LENGTH_LONG).show();
+        }
+
+        facebook = new Facebook(APP_ID);
+        mAsyncRunner = new AsyncFacebookRunner(facebook);
 
     }
 
@@ -79,5 +94,8 @@ public class MainActivity extends Activity {
         // Logs 'app deactivate' App Event.
         AppEventsLogger.deactivateApp(this);
     }
+
+
+
 
 }
