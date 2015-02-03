@@ -4,17 +4,41 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.facebook.AppEventsLogger;
 import com.facebook.Session;
+import com.facebook.SessionState;
+import com.facebook.widget.LoginButton;
+
+import org.json.JSONObject;
+
+import java.util.Arrays;
 
 
 public class MainActivity extends Activity {
+    private Session.StatusCallback statusCallback = new Session.StatusCallback() {
+        @Override
+        public void call(Session session, SessionState sessionState, Exception e) {
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        LoginButton authButton = (LoginButton)findViewById(R.id.authButton);
+
+        authButton.setReadPermissions(Arrays.asList("public_profile"));
+
+        if(Session.getActiveSession() == null)
+        {
+            Toast.makeText(getApplicationContext(),"il y a un session", Toast.LENGTH_LONG).show();
+        }
+
     }
 
 
@@ -55,6 +79,5 @@ public class MainActivity extends Activity {
         // Logs 'app deactivate' App Event.
         AppEventsLogger.deactivateApp(this);
     }
-
 
 }
