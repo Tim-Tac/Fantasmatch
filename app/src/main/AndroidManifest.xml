@@ -29,8 +29,8 @@
             android:value="@string/facebook_app_id" />
 
         <activity
-            android:name=".MainFragment"
-            android:label="@string/title_activity_main_fragment" >
+            android:name=".Profil"
+            android:label="@string/title_activity_profil" >
         </activity>
     </application>
 

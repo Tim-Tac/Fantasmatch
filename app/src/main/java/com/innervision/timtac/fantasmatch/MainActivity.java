@@ -1,58 +1,32 @@
 package com.innervision.timtac.fantasmatch;
 
-import android.app.Activity;
-import android.content.SharedPreferences;
+
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 import com.facebook.AppEventsLogger;
-import com.facebook.Session;
-import com.facebook.SessionState;
-import com.facebook.android.AsyncFacebookRunner;
-import com.facebook.android.Facebook;
-import com.facebook.widget.LoginButton;
-import org.json.JSONObject;
-import java.util.Arrays;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends FragmentActivity {
 
     private String APP_ID = "1576795835866565";
-    private Facebook facebook;
-    private AsyncFacebookRunner mAsyncRunner;
-    String FILENAME = "AndroidSSO_data";
-    private SharedPreferences mPrefs;
-
-    private Session.StatusCallback statusCallback = new Session.StatusCallback() {
-
-        @Override
-        public void call(Session session, SessionState sessionState, Exception e) {
-
-        }
-    };
+    private MainFragment mainFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-        LoginButton authButton = (LoginButton)findViewById(R.id.authButton);
+        if (savedInstanceState == null) {
+            // Add the fragment on initial activity setup
+            mainFragment = new MainFragment();
+            getSupportFragmentManager().beginTransaction().add(android.R.id.content, mainFragment).commit();
 
-        authButton.setReadPermissions(Arrays.asList("public_profile"));
-
-        if(Session.getActiveSession() == null)
-        {
-            Toast.makeText(getApplicationContext(),"il y a pas de session", Toast.LENGTH_LONG).show();
+        } else {
+            // Or set the fragment from restored state info
+            mainFragment = (MainFragment)getSupportFragmentManager().findFragmentById(android.R.id.content);
         }
-        else
-        {
-            Toast.makeText(getApplicationContext(),"il y a une session", Toast.LENGTH_LONG).show();
-        }
-
-        facebook = new Facebook(APP_ID);
-        mAsyncRunner = new AsyncFacebookRunner(facebook);
 
     }
 
