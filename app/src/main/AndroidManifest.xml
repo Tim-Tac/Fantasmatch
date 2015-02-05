@@ -29,8 +29,9 @@
             android:value="@string/facebook_app_id" />
 
         <activity
-            android:name=".Profil"
-            android:label="@string/title_activity_profil" >
+            android:name=".Profil_public"
+            android:label="@string/title_activity_profil"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
         </activity>
     </application>
 

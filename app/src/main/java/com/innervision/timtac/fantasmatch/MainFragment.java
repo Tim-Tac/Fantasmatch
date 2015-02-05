@@ -1,6 +1,5 @@
 package com.innervision.timtac.fantasmatch;
 
-import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -8,8 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.Session;
@@ -17,18 +14,22 @@ import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class MainFragment extends Fragment {
 
     private static final String TAG = "MainFragment";
     private UiLifecycleHelper uiHelper;
-    private TextView userInfoTextView;
+
+    private String lastname;
+    private String firstname;
+    private String birthday;
+    private String gender;
+    private String interest;
+    private String email;
+    private String id;
+    private String status;
+    private String relation;
 
 
     @Override
@@ -46,17 +47,15 @@ public class MainFragment extends Fragment {
         View view = inflater.inflate(R.layout.activity_main, container, false);
 
         LoginButton authButton = (LoginButton) view.findViewById(R.id.auhtButton);
-        authButton.setReadPermissions(Arrays.asList("user_likes", "user_status","public_profile","user_location","user_birthday"));
+        authButton.setReadPermissions(Arrays.asList("user_status","public_profile","user_birthday","email","user_relationships","user_relationship_details","user_about_me"));
         authButton.setFragment(this);
-        userInfoTextView = (TextView) view.findViewById(R.id.userInfoTextView);
 
         return view;
     }
 
-    private void onSessionStateChange(Session session, SessionState state, Exception exception) {
+    private void onSessionStateChange(Session session, final SessionState state, Exception exception) {
         if (state.isOpened()) {
             Log.i(TAG, "Logged in...");
-            userInfoTextView.setVisibility(View.VISIBLE);
 
             // Request user data and show the results
             Request.executeMeRequestAsync(session, new Request.GraphUserCallback() {
@@ -65,15 +64,25 @@ public class MainFragment extends Fragment {
                 public void onCompleted(GraphUser user, Response response) {
                     if (user != null) {
                         // Display the parsed user info
-                        userInfoTextView.setText(buildUserInfoDisplay(user));
-                        Toast.makeText(getActivity(),user.toString(), Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getActivity(),buildUserInfoDisplay(user),Toast.LENGTH_SHORT).show();
+
+                        buildUserInfoDisplay(user);
+                        Intent intent = new Intent(getActivity(),Profil_public.class);
+                        intent.putExtra("lastname",lastname);
+                        intent.putExtra("firstname", firstname);
+                        intent.putExtra("birthday",birthday);
+                        intent.putExtra("gender",gender);
+                        intent.putExtra("interest",interest);
+                        intent.putExtra("email",email);
+                        intent.putExtra("id",id);
+                        intent.putExtra("status",status);
+                        startActivity(intent);
                     }
                 }
             });
 
         } else if (state.isClosed()) {
             Log.i(TAG, "Logged out...");
-            userInfoTextView.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -85,8 +94,7 @@ public class MainFragment extends Fragment {
         }
     };
 
-    private Session.StatusCallback statusCallback =
-            new SessionStatusCallback();
+    private Session.StatusCallback statusCallback = new SessionStatusCallback();
 
     private void onClickLogin() {
         Session session = Session.getActiveSession();
@@ -103,12 +111,6 @@ public class MainFragment extends Fragment {
         @Override
         public void call(Session session, SessionState state, Exception exception) {
             // Respond to session state changes, ex: updating the view
-            if (session.isOpened()) {
-                // make request to the /me API
-                Log.i(TAG, "IL Y A UNE SESSION");
-
-
-            }
         }
     }
 
@@ -146,29 +148,49 @@ public class MainFragment extends Fragment {
     private String buildUserInfoDisplay(GraphUser user) {
         StringBuilder userInfo = new StringBuilder("");
 
-        // Example: typed access (name)
-        // - no special permissions required
-        userInfo.append(String.format("Name: %s\n\n",
-                user.getName()));
+        //Toast.makeText(getActivity(),"TEST" + user.toString(),Toast.LENGTH_LONG).show();
 
-        // Example: typed access (birthday)
-        // - requires user_birthday permission
         userInfo.append(String.format("Birthday: %s\n\n",
                 user.getBirthday()));
 
-        // Example: partially typed access, to location field,
-        // name key (location)
-        // - requires user_location permission
-        userInfo.append(String.format("Location: %s\n\n",
-                user.getLocation().getProperty("name")));
+        userInfo.append(String.format("test :%s\n\n",
+                user.getFirstName()));
 
-        // Example: access via property name (locale)
-        // - no special permissions required
-        userInfo.append(String.format("Locale: %s\n\n",
-                user.getProperty("locale")));
+        userInfo.append(String.format("test :%s\n\n",
+                user.getId()));
 
+        userInfo.append(String.format("test :%s\n\n",
+                user.getLastName()));
+
+        userInfo.append(String.format("test :%s\n\n",
+                user.asMap().get("email")));
+
+        userInfo.append(String.format("test :%s\n\n",
+                user.getProperty("gender")));
+
+        userInfo.append(String.format("test :%s\n\n",
+                user.getProperty("interested_in")));
+
+        userInfo.append(String.format("test :%s\n\n",
+                user.asMap().get("relationship_status")));
+
+        userInfo.append(String.format("test :%s\n\n",
+                user.getProperty("significant_other.id")));
+
+        userInfo.append(String.format("test :%s\n\n",
+                user.getProperty("significant_other")));
+
+        lastname = user.getLastName();
+        firstname = user.getFirstName();
+        birthday =  user.getBirthday();
+        id = user.getId();
+        email = user.getProperty("email").toString();
+        gender = user.asMap().get("gender").toString();
+        interest = user.getProperty("interested_in").toString();
+        status = user.getProperty("relationship_status").toString();
 
         return userInfo.toString();
+
     }
 
 }
